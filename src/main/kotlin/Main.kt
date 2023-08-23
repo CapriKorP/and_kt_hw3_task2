@@ -41,7 +41,7 @@ fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: I
     if (payMethod == "VK Pay" && lastPayment + transaction > monthLimitVkPay) {
         commission = stringMonthLimitVk
     }
-    if (payMethod != "VK Pay" && lastPayment + transaction > dailyLimitCard) {
+    if (payMethod != "VK Pay" && transaction > dailyLimitCard) {
         commission = stringDayLimitCard
     }
     if (payMethod != "VK Pay" && lastPayment + transaction > monthLimitCard) {
