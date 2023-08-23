@@ -1,12 +1,11 @@
 fun main() {
-    val payMethod = "Visa"
-    var lastPayment = 75000
-    val transaction = 10000
-
-    println("Комиссия составила ${calculate(payMethod, lastPayment, transaction)} рублей")
+    val payMethod = "Mastercard"
+    var lastPayment = 600000
+    val transaction = 15000
+    println(calculate(payMethod, lastPayment, transaction))
 }
 
-fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: Int): Int {
+fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: Int): Any {
     val maxMonthTransaction = 75000
     val minCommission = 35
     val commissionPercent = 0.75
@@ -14,18 +13,39 @@ fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: I
     val monthLimitVkPay = 40000
     val dailyLimitCard = 150000
     val monthLimitCard = 600000
+    val stringCommission = "Комиссия составила"
+    val stringRubbles = "руб."
+    val stringDayLimitVk = "Превышен суточный лимит при оплате через VK Pay"
+    val stringMonthLimitVk = "Превышен месячный лимит при оплате через VK Pay"
+    val stringDayLimitCard = "Превышен суточный лимит при оплате картой"
+    val stringMonthLimitCard = "Превышен месячный лимит при оплате картой"
+    val stringZeroCommission = "Комиссия составила 0 рублей"
 
-    val commission = when (payMethod) {
+
+    var commission:String = when (payMethod) {
         "Mastercard", "Maestro" -> {
             if (lastPayment + transaction > maxMonthTransaction) {
-                (transaction * 0.6 / 100) + 20
+                "$stringCommission ${(transaction * 0.6 / 100) + 20} $stringRubbles"
             } else {
-                0
+                "$stringZeroCommission"
             }
         }
-        "Visa", "МИР" -> if (transaction * commissionPercent / 100 <= minCommission) minCommission.toDouble() else transaction * commissionPercent / 100
-        "VK Pay" -> 0
-        else -> 0
+        "Visa", "МИР" -> "$stringCommission ${if (transaction * commissionPercent / 100 <= minCommission) minCommission.toDouble() else transaction * commissionPercent / 100} $stringRubbles"
+        "VK Pay" -> "$stringZeroCommission"
+        else -> "Ошибка перевода!!!!!"
     }
-    return commission.toInt()
+
+    if (payMethod == "VK Pay" && transaction > dailyLimitVkPay) {
+        commission = stringDayLimitVk
+    }
+    if (payMethod == "VK Pay" && lastPayment + transaction > monthLimitVkPay) {
+        commission =  stringMonthLimitVk
+    }
+    if (payMethod != "VK Pay" && lastPayment + transaction > dailyLimitCard) {
+        commission = stringDayLimitCard
+    }
+    if (payMethod != "VK Pay" && lastPayment + transaction > monthLimitCard) {
+        commission = stringMonthLimitCard
+    }
+    return commission
 }
