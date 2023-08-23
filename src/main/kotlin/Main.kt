@@ -1,14 +1,15 @@
 fun main() {
-    val payMethod = "Mastercard"
-    var lastPayment = 600000
-    val transaction = 15000
+    val payMethod = "Visa"
+    var lastPayment = 451000
+    val transaction = 4666
     println(calculate(payMethod, lastPayment, transaction))
 }
 
 fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: Int): String {
     val maxMonthTransaction = 75000
     val minCommission = 35
-    val commissionPercent = 0.75
+    val commissionPercentVisaMir = 0.75 / 100
+    val commissionPercentMastercard = 0.6 / 100
     val dailyLimitVkPay = 15000
     val monthLimitVkPay = 40000
     val dailyLimitCard = 150000
@@ -25,12 +26,20 @@ fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: I
     var commission: String = when (payMethod) {
         "Mastercard", "Maestro" -> {
             if (lastPayment + transaction > maxMonthTransaction) {
-                "$stringCommission ${(transaction * 0.6 / 100) + 20} $stringRubbles"
+                "$stringCommission ${(transaction * commissionPercentMastercard).toInt() + 20} $stringRubbles"
             } else {
                 "$stringZeroCommission"
             }
         }
-        "Visa", "МИР" -> "$stringCommission ${if (transaction * commissionPercent / 100 <= minCommission) minCommission.toDouble() else transaction * commissionPercent / 100} $stringRubbles"
+
+        "Visa", "МИР" -> "$stringCommission ${
+            if (transaction * commissionPercentVisaMir <= minCommission) {
+                minCommission
+            } else {
+                (transaction * commissionPercentVisaMir).toInt()
+            }
+        } $stringRubbles"
+
         "VK Pay" -> "$stringZeroCommission"
         else -> "Ошибка перевода!!!!!"
     }
