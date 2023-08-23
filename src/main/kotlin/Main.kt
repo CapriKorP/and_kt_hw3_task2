@@ -30,7 +30,6 @@ fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: I
                 "$stringZeroCommission"
             }
         }
-
         "Visa", "МИР" -> "$stringCommission ${if (transaction * commissionPercent / 100 <= minCommission) minCommission.toDouble() else transaction * commissionPercent / 100} $stringRubbles"
         "VK Pay" -> "$stringZeroCommission"
         else -> "Ошибка перевода!!!!!"
