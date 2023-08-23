@@ -5,7 +5,7 @@ fun main() {
     println(calculate(payMethod, lastPayment, transaction))
 }
 
-fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: Int): Any {
+fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: Int): String {
     val maxMonthTransaction = 75000
     val minCommission = 35
     val commissionPercent = 0.75
@@ -22,7 +22,7 @@ fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: I
     val stringZeroCommission = "Комиссия составила 0 рублей"
 
 
-    var commission:String = when (payMethod) {
+    var commission: String = when (payMethod) {
         "Mastercard", "Maestro" -> {
             if (lastPayment + transaction > maxMonthTransaction) {
                 "$stringCommission ${(transaction * 0.6 / 100) + 20} $stringRubbles"
@@ -30,6 +30,7 @@ fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: I
                 "$stringZeroCommission"
             }
         }
+
         "Visa", "МИР" -> "$stringCommission ${if (transaction * commissionPercent / 100 <= minCommission) minCommission.toDouble() else transaction * commissionPercent / 100} $stringRubbles"
         "VK Pay" -> "$stringZeroCommission"
         else -> "Ошибка перевода!!!!!"
@@ -39,7 +40,7 @@ fun calculate(payMethod: String = "VK Pay", lastPayment: Int = 0, transaction: I
         commission = stringDayLimitVk
     }
     if (payMethod == "VK Pay" && lastPayment + transaction > monthLimitVkPay) {
-        commission =  stringMonthLimitVk
+        commission = stringMonthLimitVk
     }
     if (payMethod != "VK Pay" && lastPayment + transaction > dailyLimitCard) {
         commission = stringDayLimitCard
